@@ -1,10 +1,10 @@
 {
-	"name": "pro-api-sdk",
+	"name": "eda-snake-game",
 	"uuid": "21a634cce36043598e2f7ad09dd76fae",
-	"displayName": "PRO API SDK",
-	"description": "嘉立创EDA & EasyEDA 专业版扩展 API 开发工具",
+	"displayName": "Eda Snake Game",
+	"description": "Eda Snake Game",
 	"version": "1.10.1",
-	"publisher": "JLCEDA <support@lceda.cn>",
+	"publisher": "安安",
 	"engines": {
 		"eda": "^2.3.0"
 	},
@@ -14,53 +14,31 @@
 		"url": ""
 	},
 	"categories": "Other",
-	"keywords": [
-		"SDK"
-	],
+	"keywords": ["SDK"],
 	"images": {
 		"logo": "./images/logo.png"
 	},
-	"homepage": "https://pro.lceda.cn",
-	"bugs": "https://lceda.cn/page/feedback?originPage=other",
+	"homepage": "https://github.com/JamAnNa/easyeda-snakegame.git",
+	"bugs": "https://github.com/JamAnNa/easyeda-snakegame.git",
 	"activationEvents": {},
 	"entry": "./dist/index",
 	"dependentExtensions": {},
 	"headerMenus": {
-		"home": [{
-			"id": "API SDK",
-			"title": "API SDK",
-			"menuItems": [{
-				"id": "About",
-				"title": "About...",
-				"registerFn": "about"
-			}]
-		}],
-		"sch": [{
-			"id": "API SDK",
-			"title": "API SDK",
-			"menuItems": [{
-				"id": "About",
-				"title": "About...",
-				"registerFn": "about"
-			}]
-		}],
-		"pcb": [{
-			"id": "API SDK",
-			"title": "API SDK",
-			"menuItems": [{
-				"id": "About",
-				"title": "About...",
-				"registerFn": "about"
-			}]
-		}],
-		"footprint": [{
-			"id": "API SDK",
-			"title": "API SDK",
-			"menuItems": [{
-				"id": "About",
-				"title": "About...",
-				"registerFn": "about"
-			}]
-		}]
+		"home": [{}],
+		"sch": [],
+		"pcb": [
+			{
+				"id": "API SDK",
+				"title": "API SDK",
+				"menuItems": [
+					{
+						"id": "About",
+						"title": "About...",
+						"registerFn": "about"
+					}
+				]
+			}
+		],
+		"footprint": []
 	}
 }

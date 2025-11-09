@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Snake Game</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				background-color: #1a1a2e;
+				font-family: 'Arial', sans-serif;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				overflow: hidden;
+				color: #fff;
+			}
+
+			.game-controller {
+				width: 400px;
+				height: 400px;
+				background: linear-gradient(145deg, #16213e, #0f3460);
+				border-radius: 15px;
+				box-shadow:
+					0 10px 20px rgba(0, 0, 0, 0.5),
+					inset 0 1px 0 rgba(255, 255, 255, 0.1);
+				position: relative;
+				overflow: hidden;
+				display: grid;
+				grid-template-rows: auto 1fr auto;
+				padding: 12px;
+				gap: 8px;
+			}
+
+			.game-controller::before {
+				content: '';
+				position: absolute;
+				top: 8px;
+				left: 8px;
+				right: 8px;
+				height: 26px;
+				background: linear-gradient(90deg, #e94560, #0f3460);
+				border-radius: 8px;
+				opacity: 0.7;
+				z-index: 1;
+			}
+
+			.title {
+				color: #e94560;
+				font-size: 16px;
+				text-align: center;
+				font-weight: bold;
+				margin-top: 8px;
+				z-index: 10;
+				text-shadow: 0 0 8px rgba(233, 69, 96, 0.5);
+			}
+
+			.main-content {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				z-index: 5;
+			}
+
+			.score-board {
+				display: flex;
+				justify-content: space-around;
+				font-size: 12px;
+				color: white;
+				margin-bottom: 8px;
+			}
+
+			.score-board div {
+				background: rgba(255, 255, 255, 0.1);
+				padding: 4px 6px;
+				border-radius: 6px;
+				min-width: 50px;
+				text-align: center;
+			}
+
+			.settings {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 8px;
+				justify-content: center;
+				font-size: 12px;
+				margin-bottom: 6px;
+			}
+
+			.color-picker {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				color: #e94560;
+			}
+
+			.color-picker label {
+				font-size: 11px;
+				width: 28px;
+			}
+
+			.color-picker input[type='color'] {
+				scale: 0.85;
+			}
+
+			.image-upload {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				color: #e94560;
+				font-size: 11px;
+			}
+
+			.preview {
+				width: 30px;
+				height: 30px;
+				border-radius: 50%;
+				overflow: hidden;
+				border: 1.5px solid #e94560;
+				background: #333;
+			}
+
+			.preview img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			.reset-img {
+				font-size: 10px;
+				color: #ccc;
+				cursor: pointer;
+				margin-left: 2px;
+			}
+
+			.bottom-row {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				font-size: 12px;
+				margin-top: 8px;
+			}
+
+			.toggle-container {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				color: #e94560;
+			}
+
+			.toggle-label {
+				font-size: 11px;
+			}
+
+			.switch {
+				position: relative;
+				display: inline-block;
+				width: 38px;
+				height: 18px;
+			}
+
+			.switch input {
+				opacity: 0;
+				width: 0;
+				height: 0;
+			}
+
+			.slider {
+				position: absolute;
+				cursor: pointer;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background-color: #333;
+				transition: 0.3s;
+				border-radius: 18px;
+			}
+
+			.slider:before {
+				position: absolute;
+				content: '';
+				height: 14px;
+				width: 14px;
+				left: 2px;
+				bottom: 2px;
+				background-color: #ccc;
+				transition: 0.3s;
+				border-radius: 50%;
+			}
+
+			input:checked + .slider {
+				background-color: #e94560;
+			}
+
+			input:checked + .slider:before {
+				transform: translateX(18px);
+			}
+
+			.key-container {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				grid-template-rows: repeat(2, 1fr);
+				gap: 6px;
+				margin-top: 8px;
+			}
+
+			.key {
+				width: 56px;
+				height: 56px;
+				background: linear-gradient(145deg, #2a2a3e, #1a1a2e);
+				border-radius: 8px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 18px;
+				font-weight: bold;
+				color: #e94560;
+				box-shadow:
+					0 4px 8px rgba(0, 0, 0, 0.3),
+					inset 0 1px 0 rgba(255, 255, 255, 0.1);
+				transition: all 0.1s ease;
+				user-select: none;
+			}
+
+			.key.active {
+				background: linear-gradient(145deg, #e94560, #c13651);
+				color: #fff;
+				transform: translateY(1px);
+				box-shadow:
+					0 2px 4px rgba(0, 0, 0, 0.3),
+					inset 0 1px 0 rgba(255, 255, 255, 0.2);
+			}
+
+			.key-w {
+				grid-column: 2;
+				grid-row: 1;
+			}
+			.key-a {
+				grid-column: 1;
+				grid-row: 2;
+			}
+			.key-s {
+				grid-column: 2;
+				grid-row: 2;
+			}
+			.key-d {
+				grid-column: 3;
+				grid-row: 2;
+			}
+			.key-shift {
+				grid-column: 1 / span 3;
+				width: auto;
+				font-size: 14px;
+				padding: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="game-controller">
+			<div class="title">SnakeControl</div>
+
+			<div class="main-content">
+				<div class="score-board">
+					<div>得分: <span id="score">0</span></div>
+					<div>长度: <span id="length">1</span></div>
+					<div>速度: <span id="speed-status">正常</span></div>
+				</div>
+
+				<div class="settings">
+					<div class="color-picker">
+						<label for="head-color">蛇头:</label>
+						<input type="color" id="head-color" value="#aa0000" />
+					</div>
+					<div class="color-picker">
+						<label for="food-color">食物:</label>
+						<input type="color" id="food-color" value="#00FF00" />
+					</div>
+					<div class="image-upload">
+						<label for="head-image">头像:</label>
+						<input type="file" id="head-image" accept="image/*" />
+						<div class="preview"><img id="preview-img" src="" alt="" /></div>
+						<span class="reset-img" id="reset-image">重置</span>
+					</div>
+				</div>
+
+				<div class="bottom-row">
+					<label class="toggle-container">
+						<label class="toggle-label">画面跟随</label>
+						<label class="switch">
+							<input type="checkbox" id="follow-toggle" />
+							<span class="slider"></span>
+						</label>
+					</label>
+				</div>
+
+				<div class="key-container">
+					<div class="key key-w" data-key="w">W</div>
+					<div class="key key-a" data-key="a">A</div>
+					<div class="key key-s" data-key="s">S</div>
+					<div class="key key-d" data-key="d">D</div>
+					<div class="key key-shift" data-key="shift">SHIFT</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const keys = document.querySelectorAll('.key');
+				let lastPressedKey = null;
+				let Snake_X = 0;
+				let Snake_Y = 0;
+				let Snake_Body = [];
+				let direction = 0;
+				let GameStartFlag = 0;
+				let foodX = 0;
+				let foodY = 0;
+				let foodID = '';
+				let normalSpeedInterval = null;
+				let fastSpeedInterval = null;
+				let followInterval = null;
+				let isFollowing = false;
+				let isShiftPressed = false;
+				let score = 0;
+				let snakeSize = 10;
+				const NORMAL_SPEED = 200;
+				const FAST_SPEED = 100;
+				const GRID_SIZE = 10;
+				const SIZE_INCREMENT = 2;
+
+				// DOM Elements
+				const scoreEl = document.getElementById('score');
+				const lengthEl = document.getElementById('length');
+				const speedStatusEl = document.getElementById('speed-status');
+				const followToggle = document.getElementById('follow-toggle');
+				const headColorPicker = document.getElementById('head-color');
+				const foodColorPicker = document.getElementById('food-color');
+				const headImageInput = document.getElementById('head-image');
+				const previewImg = document.getElementById('preview-img');
+				const resetImageBtn = document.getElementById('reset-image');
+
+				// 当前配置
+				let snakeHeadColor = '#aa0000';
+				let foodColor = '#00FF00';
+				let customHeadImage = null;
+
+				// ========== 文件上传与预览 ==========
+				headImageInput.addEventListener('change', (e) => {
+					const file = e.target.files[0];
+					if (!file) return;
+					const reader = new FileReader();
+					reader.onload = function (event) {
+						previewImg.src = event.target.result;
+						customHeadImage = event.target.result;
+					};
+					reader.readAsDataURL(file);
+				});
+
+				resetImageBtn.addEventListener('click', () => {
+					headImageInput.value = '';
+					previewImg.src = '';
+					customHeadImage = null;
+					eda.sys_Message.showToastMessage('已恢复默认蛇头样式', 'info', 1.5);
+				});
+
+				// ========== 颜色监听 ==========
+				headColorPicker.addEventListener('change', (e) => {
+					snakeHeadColor = e.target.value;
+					if (customHeadImage === null && Snake_Body.length > 0) {
+						updateSnakeHeadColor();
+					}
+				});
+
+				foodColorPicker.addEventListener('change', (e) => {
+					foodColor = e.target.value;
+					if (foodID) updateFoodColor();
+				});
+
+				async function updateSnakeHeadColor() {
+					if (Snake_Body.length === 0) return;
+					const head = Snake_Body[0];
+					const imageData = createSolidCircleBase64(100, snakeHeadColor);
+					await eda.pcb_PrimitiveObject.modify(head.ID, { image: imageData });
+				}
+
+				async function updateFoodColor() {
+					if (!foodID) return;
+					const imageData = createSolidCircleBase64(100, foodColor);
+					await eda.pcb_PrimitiveObject.modify(foodID, { image: imageData });
+				}
+
+				function createSolidCircleBase64(radius, colorOrImage) {
+					const canvas = document.createElement('canvas');
+					const ctx = canvas.getContext('2d');
+					canvas.width = radius * 2;
+					canvas.height = radius * 2;
+					ctx.beginPath();
+					ctx.arc(radius, radius, radius, 0, Math.PI * 2, false);
+					ctx.clip();
+
+					if (typeof colorOrImage === 'string' && (colorOrImage.startsWith('#') || colorOrImage.startsWith('rgb'))) {
+						ctx.fillStyle = colorOrImage;
+						ctx.fill();
+					} else if (colorOrImage) {
+						const img = new Image();
+						img.src = colorOrImage;
+						ctx.drawImage(img, 0, 0, radius * 2, radius * 2);
+					} else {
+						ctx.fillStyle = '#aa0000';
+						ctx.fill();
+					}
+					return canvas.toDataURL();
+				}
+
+				async function Create(x, y, config) {
+					let colorOrImage = config.useImage ? customHeadImage : typeof config === 'string' ? config : snakeHeadColor;
+					const imageData = createSolidCircleBase64(100, colorOrImage);
+
+					return await eda.pcb_PrimitiveObject.create(
+						EPCB_LayerId.TOP_SILKSCREEN,
+						x,
+						y,
+						imageData,
+						snakeSize,
+						snakeSize,
+						0,
+						false,
+						'12',
+						false,
+					);
+				}
+
+				async function generateFood() {
+					if (foodID) await eda.pcb_PrimitiveObject.delete(foodID);
+
+					const range = 300;
+					foodX = Math.floor((Snake_X + (Math.random() - 0.5) * range) / GRID_SIZE) * GRID_SIZE;
+					foodY = Math.floor((Snake_Y + (Math.random() - 0.5) * range) / GRID_SIZE) * GRID_SIZE;
+
+					while (isPositionOccupied(foodX, foodY)) {
+						foodX = Math.floor((Snake_X + (Math.random() - 0.5) * range) / GRID_SIZE) * GRID_SIZE;
+						foodY = Math.floor((Snake_Y + (Math.random() - 0.5) * range) / GRID_SIZE) * GRID_SIZE;
+					}
+
+					foodID = await Create(foodX, foodY, foodColor);
+				}
+
+				function isPositionOccupied(x, y) {
+					return Snake_Body.some((segment) => segment.x === x && segment.y === y);
+				}
+
+				async function moveSnake() {
+					if (direction === 0) return;
+
+					let newHeadX = Snake_X;
+					let newHeadY = Snake_Y;
+
+					switch (direction) {
+						case 1:
+							newHeadY += GRID_SIZE;
+							break;
+						case 2:
+							newHeadY -= GRID_SIZE;
+							break;
+						case 3:
+							newHeadX -= GRID_SIZE;
+							break;
+						case 4:
+							newHeadX += GRID_SIZE;
+							break;
+					}
+
+					if (isPositionOccupied(newHeadX, newHeadY)) {
+						gameOver();
+						return;
+					}
+
+					const ateFood = newHeadX === foodX && newHeadY === foodY;
+
+					Snake_X = newHeadX;
+					Snake_Y = newHeadY;
+
+					const headConfig = customHeadImage ? { useImage: true } : snakeHeadColor;
+					const newHeadID = await Create(Snake_X, Snake_Y, headConfig);
+					Snake_Body.unshift({ ID: newHeadID, x: Snake_X, y: Snake_Y });
+
+					if (ateFood) {
+						score++;
+						await handleScoreIncrease();
+						await generateFood();
+					} else {
+						const tail = Snake_Body.pop();
+						await eda.pcb_PrimitiveObject.delete(tail.ID);
+					}
+
+					updateScoreBoard();
+				}
+
+				async function handleScoreIncrease() {
+					snakeSize += SIZE_INCREMENT;
+					for (const segment of Snake_Body) {
+						await eda.pcb_PrimitiveObject.modify(segment.ID, {
+							width: snakeSize,
+							height: snakeSize,
+						});
+					}
+					eda.sys_Message.showToastMessage(`得分: ${score}! 蛇升级了!`, 'info', 2);
+				}
+
+				function startNormalSpeed() {
+					if (normalSpeedInterval) clearInterval(normalSpeedInterval);
+					normalSpeedInterval = setInterval(moveSnake, NORMAL_SPEED);
+				}
+
+				function startFastSpeed() {
+					if (fastSpeedInterval) clearInterval(fastSpeedInterval);
+					fastSpeedInterval = setInterval(moveSnake, FAST_SPEED);
+				}
+
+				function stopCurrentSpeed() {
+					if (normalSpeedInterval) clearInterval(normalSpeedInterval);
+					if (fastSpeedInterval) clearInterval(fastSpeedInterval);
+				}
+
+				function updateScoreBoard() {
+					scoreEl.textContent = score;
+					lengthEl.textContent = Snake_Body.length;
+					speedStatusEl.textContent = isShiftPressed ? '加速' : '正常';
+				}
+
+				async function gameOver() {
+					stopCurrentSpeed();
+					clearInterval(keyPressInterval);
+					if (followInterval) clearInterval(followInterval);
+
+					for (const seg of Snake_Body) {
+						await eda.pcb_PrimitiveObject.delete(seg.ID);
+					}
+					if (foodID) {
+						await eda.pcb_PrimitiveObject.delete(foodID);
+					}
+
+					GameStartFlag = 0;
+					eda.sys_Message.showToastMessage(`💥 游戏结束！最终得分: ${score}`, 'warn', 4);
+				}
+
+				async function startGame() {
+					if (GameStartFlag === 1) return;
+
+					GameStartFlag = 1;
+					Snake_X = 0;
+					Snake_Y = 0;
+					Snake_Body = [];
+					direction = 0;
+					score = 0;
+					snakeSize = 10;
+
+					const headConfig = customHeadImage ? { useImage: true } : snakeHeadColor;
+					const headID = await Create(Snake_X, Snake_Y, headConfig);
+					Snake_Body.push({ ID: headID, x: Snake_X, y: Snake_Y });
+
+					await generateFood();
+					startNormalSpeed();
+
+					keyPressInterval = setInterval(() => {
+						if (lastPressedKey) {
+							const key = lastPressedKey.toLowerCase();
+							let newDirection = direction;
+							switch (key) {
+								case 'w':
+								case 'arrowup':
+									if (direction !== 2) newDirection = 1;
+									break;
+								case 's':
+								case 'arrowdown':
+									if (direction !== 1) newDirection = 2;
+									break;
+								case 'a':
+								case 'arrowleft':
+									if (direction !== 4) newDirection = 3;
+									break;
+								case 'd':
+								case 'arrowright':
+									if (direction !== 3) newDirection = 4;
+									break;
+							}
+							direction = newDirection;
+							lastPressedKey = null;
+						}
+					}, 50);
+
+					if (followInterval) clearInterval(followInterval);
+					followInterval = setInterval(() => {
+						if (isFollowing && Snake_Body.length > 0) {
+							eda.pcb_Document.navigateToCoordinates(Snake_Body[0].x, Snake_Body[0].y);
+						}
+					}, 100);
+
+					updateScoreBoard();
+				}
+
+				// ========== 键盘事件 ==========
+				document.addEventListener('keydown', async (e) => {
+					const key = e.key.toLowerCase();
+					const keyElement = document.querySelector(`.key[data-key="${key}"]`);
+					if (keyElement) keyElement.classList.add('active');
+
+					lastPressedKey = key;
+
+					if (key === 'shift' && !isShiftPressed) {
+						isShiftPressed = true;
+						stopCurrentSpeed();
+						startFastSpeed();
+						updateScoreBoard();
+					}
+
+					if (key === 'v' && GameStartFlag === 0) {
+						await startGame();
+						eda.sys_Message.showToastMessage('🎮 游戏开始！用 WASD 控制方向', 'info', 2);
+					}
+				});
+
+				document.addEventListener('keyup', (e) => {
+					const key = e.key.toLowerCase();
+					const keyElement = document.querySelector(`.key[data-key="${key}"]`);
+					if (keyElement) keyElement.classList.remove('active');
+
+					if (key === 'shift' && isShiftPressed) {
+						isShiftPressed = false;
+						stopCurrentSpeed();
+						startNormalSpeed();
+						updateScoreBoard();
+					}
+				});
+
+				window.addEventListener('blur', () => {
+					keys.forEach((k) => k.classList.remove('active'));
+				});
+
+				followToggle.addEventListener('change', () => {
+					isFollowing = followToggle.checked;
+					if (isFollowing && Snake_Body.length > 0) {
+						eda.pcb_Document.navigateToCoordinates(Snake_Body[0].x, Snake_Body[0].y);
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
