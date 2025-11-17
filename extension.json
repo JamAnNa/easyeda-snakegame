@@ -3,7 +3,7 @@
 	"uuid": "21a634cce36043598e2f7ad09dd76fee",
 	"displayName": "EDA SNAKE GAME",
 	"description": "现在你可以在嘉立创EDA上玩贪吃蛇了",
-	"version": "1.11.1",
+	"version": "1.11.2",
 	"publisher": "安安",
 	"engines": {
 		"eda": "^2.4.0"
@@ -26,21 +26,24 @@
 	"headerMenus": {
 		"home": [],
 		"sch": [],
-		"pcb": [{
-			"id": "GAME",
-			"title": "贪吃蛇",
-			"menuItems": [{
-				"id": "Snake",
-				"title": "开始游戏...",
-				"registerFn": "GameStart"
-			}, {
-				"id": "debug",
-				"title": "调试...",
-				"registerFn": "DebugTool"
-			}]
-		}],
-		"footprint": [
-
-		]
+		"pcb": [
+			{
+				"id": "GAME",
+				"title": "贪吃蛇",
+				"menuItems": [
+					{
+						"id": "Snake",
+						"title": "开始游戏...",
+						"registerFn": "GameStart"
+					},
+					{
+						"id": "debug",
+						"title": "调试...",
+						"registerFn": "DebugTool"
+					}
+				]
+			}
+		],
+		"footprint": []
 	}
 }
