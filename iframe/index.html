@@ -195,11 +195,11 @@
 				border-radius: 50%;
 			}
 
-			input:checked + .slider {
+			input:checked+.slider {
 				background-color: #e94560;
 			}
 
-			input:checked + .slider:before {
+			input:checked+.slider:before {
 				transform: translateX(18px);
 			}
 
@@ -242,18 +242,22 @@
 				grid-column: 2;
 				grid-row: 1;
 			}
+
 			.key-a {
 				grid-column: 1;
 				grid-row: 2;
 			}
+
 			.key-s {
 				grid-column: 2;
 				grid-row: 2;
 			}
+
 			.key-d {
 				grid-column: 3;
 				grid-row: 2;
 			}
+
 			.key-shift {
 				grid-column: 1 / span 3;
 				width: auto;
@@ -355,7 +359,7 @@
 					const file = e.target.files[0];
 					if (!file) return;
 					const reader = new FileReader();
-					reader.onload = function (event) {
+					reader.onload = function(event) {
 						previewImg.src = event.target.result;
 						customHeadImage = event.target.result;
 					};

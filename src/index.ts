@@ -23,11 +23,11 @@ export function about(): void {
 }
 
 export async function GameStart(): void {
-	await eda.sys_IFrame.openIFrame('/iframe/index.html', 350, 400, 'Snake_Game');
+	await eda.sys_IFrame.openIFrame('/iframe/index.html', 500, 500, 'Snake_Game');
 	let result = await eda.sys_IFrame.hideIFrame('Snake Game');
 	console.log(result);
 }
 
 export function DebugTool(): void {
-	eda.sys_IFrame.openIFrame('/iframe/tool/tool.html', 700, 600, 'Debug_Tool');
+	eda.sys_IFrame.openIFrame('/iframe/debug/index.html', 700, 600, 'Debug_Tool');
 }

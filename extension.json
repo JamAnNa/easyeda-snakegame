@@ -1,12 +1,12 @@
 {
 	"name": "eda-snake-game",
-	"uuid": "21a634cce36043598e2f7ad09dd76fae",
-	"displayName": "Eda Snake Game",
-	"description": "Eda Snake Game",
-	"version": "1.10.1",
+	"uuid": "21a634cce36043598e2f7ad09dd76fee",
+	"displayName": "EDA SNAKE GAME",
+	"description": "现在你可以在嘉立创EDA上玩贪吃蛇了",
+	"version": "1.11.1",
 	"publisher": "安安",
 	"engines": {
-		"eda": "^2.3.0"
+		"eda": "^2.4.0"
 	},
 	"license": "Apache-2.0",
 	"repository": {
@@ -14,31 +14,33 @@
 		"url": ""
 	},
 	"categories": "Other",
-	"keywords": ["SDK"],
+	"keywords": ["SNAKE", "PCB"],
 	"images": {
 		"logo": "./images/logo.png"
 	},
-	"homepage": "https://github.com/JamAnNa/easyeda-snakegame.git",
-	"bugs": "https://github.com/JamAnNa/easyeda-snakegame.git",
+	"homepage": "https://pro.lceda.cn",
+	"bugs": "https://lceda.cn/page/feedback?originPage=other",
 	"activationEvents": {},
 	"entry": "./dist/index",
 	"dependentExtensions": {},
 	"headerMenus": {
-		"home": [{}],
+		"home": [],
 		"sch": [],
-		"pcb": [
-			{
-				"id": "API SDK",
-				"title": "API SDK",
-				"menuItems": [
-					{
-						"id": "About",
-						"title": "About...",
-						"registerFn": "about"
-					}
-				]
-			}
-		],
-		"footprint": []
+		"pcb": [{
+			"id": "GAME",
+			"title": "贪吃蛇",
+			"menuItems": [{
+				"id": "Snake",
+				"title": "开始游戏...",
+				"registerFn": "GameStart"
+			}, {
+				"id": "debug",
+				"title": "调试...",
+				"registerFn": "DebugTool"
+			}]
+		}],
+		"footprint": [
+
+		]
 	}
 }
